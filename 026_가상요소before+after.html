@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가상요소 before + after</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            /* h3의 부모가 없음>>>>.body태그가 부모 */
+            text-align: center;
+        }
+        h1, h2, h3 {
+            /* 여러개의 스타일을 한번에 지정 가능 */
+            font-size: 50px;
+            /* text-align: center;
+            >>>>>> body태그에게 적용했으므로 생략*/
+        }
+
+        h1::before {
+            /* 가상의 선택자에게 (::before) text 앞쪽으로 지정
+            가상의 선택자에겐 컨텐츠를 사용해야 함 */
+            content: '🙄'; 
+        }
+        h2::after {
+            content: '😎';
+            font-size: 20px;
+        }
+
+        h3 {
+            position: relative;
+            display: inline-block; /* text가 가지고있는 길이 값을 본인이 가지고있는 길이값만큼 잡히도록 잡아줌 */
+        }
+        h3::before {
+            content: '';
+            /* 가상요소를 사용할때 컨텐츠가 무조건 있어야함
+            그러므로 아무것도 쓰지 않을 경우 빈칸으로 남겨둠 */
+            width: 100%;
+            height: 20px;
+            background-color: rgba(203, 152, 250, 0.651);
+            display: block; /* before/after은 인라인요소기 떄문에 display:block을 해줘야 적용됨 */
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            z-index: -1; /* 배치 : 뒤로보내기 */
+        }
+        .box {
+            width: 500px;
+            height: 500px;
+            position: relative;
+        }
+        .box figure {
+            height: 100%;
+        }
+        .box figure img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .box div {
+            position: absolute;
+            top: 50%;/* .box가 가진 반만큼 내여옴, 완전한 중간은 아니기 떄문에 transform 사용 */
+            left: 0;
+            transform: translate(0, -50%);/* div가 가지는 영역에서 -50% 이동 */
+            /* = transform: translateY(-50%) */
+            color: #fff;
+            /* background-color: rgba(0, 0, 0, 0.432); */
+            /* background-color가 div의 부모인 .box가 가진 전체 크기만큼 가지고 싶은 경우 >> 가상요소 사용 */
+            display: none;
+            /* 대신 transition 적용불가 */
+        }
+        .box::before {
+            /* 검사>>첫째 자식으로 인식 */
+            content: ''; /* 가상요소 필수!! */
+            width: 100%;
+            height: 100%;
+            display: block;
+            background-color: rgba(0, 0, 0, 0.432);
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;/* 투명도 조절 0 ~ 1 */
+            /* display :none >>>transition 적용 안됨 */
+            transition: all 1s;
+            backdrop-filter: blur(7px);/* 이미지에게 블러효과 */
+        }
+        .box:hover::before {
+            opacity: 1;
+            /* display: block */
+        }
+        .box:hover div {
+            display: block;
+            /* 대신 transition 적용불가 */
+        }
+
+        span::after {
+            content: '🍀';
+        }
+        .cat {
+            width: 300px;
+            height: 300px;
+            position: relative;
+        }
+        .cat figure {
+            height: 100%;
+        }
+        .cat figure img {
+            width: 100%;
+            height: 100%;
+        }
+        .cat div {
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            background-color: antiquewhite;
+            border-radius: 10px;
+            opacity: 0;
+        }
+        .cat::before {
+            content: '';
+            width: 100%;
+            height: 100%;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: rgba(255, 251, 0, 0.959);
+            opacity: 1;
+            transition: all 0.8s;
+        }
+        .cat:hover::before {
+            opacity: 0;
+        }
+        .cat:hover div {
+            opacity: 1;
+            transition: all 2s;
+            /* 마우스 내릴때 시간 적용 안됨 */
+        }
+    </style>
+</head>
+<body>
+    <h1>before</h1>
+    <h2>after</h2>
+    <h3>가상요소</h3>
+
+    <div class="box">
+        <figure>
+            <img src="img/크리스마스2.png" alt="크리스마스이미지" />
+        </figure>
+        <div>
+            <h4>제목 들어가는 공간</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quo accusamus, assumenda perferendis optio dolores quidem. Cum quas exercitationem molestias quaerat distinctio itaque consectetur, eaque, atque enim sapiente velit, laboriosam recusandae!</p>
+        </div>
+    </div><!-- .box END -->
+
+    <div class="cat">
+        <figure>
+            <img src="img/happycat.webp" alt="해피캣" />
+        </figure>
+        <div>
+            <span>HAPPY</span>
+        </div>
+    </div><!-- .cat END -->
+</body>
+</html>
